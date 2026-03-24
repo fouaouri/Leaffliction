@@ -14,11 +14,11 @@ def main():
     if image is None:
         print("Could not read the image.")
         return
-    directoryName = "New_directory"
+    directoryName = os.path.dirname(imagePath)
     os.makedirs(directoryName, exist_ok=True)
     filename = os.path.basename(imagePath)
     name, extention = os.path.splitext(filename)
-    cv2.imwrite(f"{directoryName}/{name}_original{extention}", image)
+    # cv2.imwrite(f"{directoryName}/{name}_original{extention}", image)
     #Flip
     flipedImage = cv2.flip(image, 1)
     cv2.imwrite(f"{directoryName}/{name}_Flip{extention}", flipedImage)
@@ -43,7 +43,8 @@ def main():
 
     #scaling
 
-    scaledImage = cv2.resize(image, None, fx=1.5, fy=1.5)
+    scaled = cv2.resize(image, None, fx=1.2, fy=1.2)
+    scaledImage = cv2.resize(scaled, (w, h))
     cv2.imwrite(f"{directoryName}/{name}_Scaled{extention}", scaledImage)
 
     #rightness
