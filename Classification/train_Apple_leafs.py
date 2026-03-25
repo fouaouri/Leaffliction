@@ -5,6 +5,8 @@ import pandas as pd
 import shutil
 #The shutil module in Python is a utility library for file operations. Its name comes from “shell utilities.” You can use it to copy, move, or delete files and directories, among other things.
 import subprocess
+import json
+
 
 # Split the data into training and validation sets
 directoryPath = "../leaves/Apple"
@@ -34,6 +36,7 @@ for className in os.listdir(directoryPath):
 
 # print("Data has been split into training and validation sets.")
 
+
 # run the Augmentation program
 
 for className in os.listdir(train_dir):
@@ -62,6 +65,10 @@ train_generator = train_data_generator.flow_from_directory(
     batch_size=32,
     class_mode='categorical'
 )
+print(train_generator.class_indices)
+
+with open("class_indices_apple.json", "w") as f:
+    json.dump(train_generator.class_indices, f)
 validation_generator = validation_data_generator.flow_from_directory(
     validation_dir,
     target_size=(128, 128),
