@@ -12,9 +12,9 @@ def show_prediction_graph(classes, pred):
     plt.title("Model prediction")
     plt.show()
 
-model = load_model("apple_leafs_model.h5")
+model = load_model("my_model.h5")
 
-with open("class_indices_apple.json") as f:
+with open("class_indices.json") as f:
     class_indices = json.load(f)
 
 class_names = list(class_indices.keys())
