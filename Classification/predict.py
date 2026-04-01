@@ -43,7 +43,7 @@ def predict(img_path):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python predict.py <image_path>")
+        print("Usage: python3 predict.py <image_path>")
         sys.exit(1)
     
     predict(sys.argv[1])

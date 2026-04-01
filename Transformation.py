@@ -117,7 +117,7 @@ def main ():
                 plt.close()
 
     else:
-        print("Usage: python Transformation.py <filename>")
+        print("Usage: python3 Transformation.py <filename>")
         return
 
 main()

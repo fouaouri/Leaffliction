@@ -26,7 +26,7 @@ def get_the_pie_chart(directoryName):
 
 def main():
     if(len(sys.argv) != 2):
-        print("Usage: python Distribution.py <filename>")
+        print("Usage: python3 Distribution.py <filename>")
         return
     directoryName = sys.argv[1]
     for className in os.listdir(directoryName):

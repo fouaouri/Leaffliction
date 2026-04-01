@@ -7,7 +7,7 @@ import numpy as np
 
 def main():
     if(len(sys.argv) != 2):
-        print("Usage: python Augmentation.py <filename>")
+        print("Usage: python3 Augmentation.py <filename>")
         return
     imagePath = sys.argv[1]
     image = cv2.imread(imagePath)

@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split #pip install scikit-learn
 import numpy as np
 import pandas as pd
 import shutil
-#The shutil module in Python is a utility library for file operations. Its name comes from “shell utilities.” You can use it to copy, move, or delete files and directories, among other things.
+#The shutil module in python3 is a utility library for file operations. Its name comes from “shell utilities.” You can use it to copy, move, or delete files and directories, among other things.
 import subprocess
 import json
 
