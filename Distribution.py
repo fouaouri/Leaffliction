@@ -1,46 +1,114 @@
-import os
-
 import sys
-
+import os
 import matplotlib.pyplot as plt
 
-data = {}
-pourcentages = {}
+IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".JPG", ".JPEG", ".PNG")
+BALANCE_THRESHOLD = 2
 
-def get_the_bar_chart(directoryName):
-    plt.figure(figsize=(15, 6))
+
+def validate_arguments():
+    if len(sys.argv) != 2:
+        print("Usage: python Distribution.py <dataset_path>")
+        sys.exit(1)
+
+    dataset_path = sys.argv[1]
+
+    if not os.path.isdir(dataset_path):
+        print("Error: path does not exist or is not a directory")
+        sys.exit(1)
+
+    return dataset_path
+
+
+def get_plant_name(dataset_path):
+    return os.path.basename(dataset_path)
+
+
+def count_images_in_class(class_path):
+    image_count = 0
+
+    for file_name in os.listdir(class_path):
+        if file_name.endswith(IMAGE_EXTENSIONS):
+            image_count += 1
+
+    return image_count
+
+
+def get_class_counts(dataset_path):
+    class_counts = {}
+
+    for item in os.listdir(dataset_path):
+        class_path = os.path.join(dataset_path, item)
+
+        if os.path.isdir(class_path):
+            class_counts[item] = count_images_in_class(class_path)
+
+    return class_counts
+
+
+def print_dataset_statistics(plant_name, class_counts):
+    print(f"Plant type: {plant_name}")
+    print("Number of images per class:")
+
+    for class_name, count in class_counts.items():
+        print(f"- {class_name}: {count}")
+
+    total_images = sum(class_counts.values())
+    print(f"-> Total images: {total_images}")
+
+    min_class = min(class_counts, key=class_counts.get)
+    max_class = max(class_counts, key=class_counts.get)
+
+    print(f"Smallest class: {min_class} - {class_counts[min_class]}")
+    print(f"Largest class: {max_class} - {class_counts[max_class]}")
+
+    if class_counts[max_class] > BALANCE_THRESHOLD * class_counts[min_class]:
+        print("Dataset is imbalanced")
+    else:
+        print("Dataset is balanced")
+
+
+def plot_bar_chart(plant_name, class_counts):
+    labels = list(class_counts.keys())
+    values = list(class_counts.values())
     colors = plt.cm.tab20.colors
-    plt.bar(data.keys(), data.values(), color=colors[:len(data)])
-    plt.title(directoryName)
+
+    plt.figure(figsize=(10, 5))
+    plt.bar(labels, values, color=colors[:len(labels)])
+
+    plt.title(f"{plant_name} - Distribution of images by class")
     plt.xlabel("Classes")
-    plt.ylabel("Number of Images")
-    plt.tight_layout()
+    plt.ylabel("Number of images")
 
-def get_the_pie_chart(directoryName):
-    plt.figure(figsize=(8, 8))
-    colors = plt.cm.tab20.colors
-    plt.pie(pourcentages.values(), labels=pourcentages.keys(), autopct='%1.1f%%', colors=colors[:len(pourcentages)])
-    plt.title(directoryName)
-    plt.axis('equal')
+    plt.xticks(rotation=45)
     plt.tight_layout()
+    plt.show()
+
+
+def plot_pie_chart(plant_name, class_counts):
+    labels = list(class_counts.keys())
+    values = list(class_counts.values())
+
+    plt.figure(figsize=(6, 6))
+    plt.pie(values, labels=labels, autopct="%1.1f%%")
+    plt.title(f"{plant_name} - Class distribution")
+    plt.tight_layout()
+    plt.show()
+
 
 def main():
-    if(len(sys.argv) != 2):
-        print("Usage: python3 Distribution.py <filename>")
-        return
-    directoryName = sys.argv[1]
-    for className in os.listdir(directoryName):
-        classPath = os.path.join(directoryName, className)
-        if os.path.isdir(classPath):
-            images = [
-                f for f in os.listdir(classPath)
-                if f.lower().endswith(('.png', '.jpg', '.jpeg'))
-            ]
-            data[className] = len(images)
-    count_the_total = sum(data.values())
-    for each in data:
-        pourcentages[each] = (data[each] / count_the_total) * 100
-    get_the_bar_chart(sys.argv[1])
-    get_the_pie_chart(sys.argv[1])
-    plt.show()
-main()
+    dataset_path = validate_arguments()
+    plant_name = get_plant_name(dataset_path)
+    class_counts = get_class_counts(dataset_path)
+
+    if not class_counts:
+        print("Error: no class directories found in the dataset")
+        sys.exit(1)
+
+    print_dataset_statistics(plant_name, class_counts)
+    plot_bar_chart(plant_name, class_counts)
+    plot_pie_chart(plant_name, class_counts)
+
+
+if __name__ == "__main__":
+    main()
