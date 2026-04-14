@@ -13,7 +13,7 @@ def show_prediction_graph(classes, pred):
     plt.show()
 
 model = load_model("my_model.h5")
-
+print("summary :", model.summary())
 with open("class_indices.json") as f:
     class_indices = json.load(f)
 
@@ -45,5 +45,4 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python3 predict.py <image_path>")
         sys.exit(1)
-    
     predict(sys.argv[1])
