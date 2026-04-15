@@ -4,9 +4,6 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# ==================================
-# CONFIGURATION
-# ==================================
 FIGURE_SIZE = (12, 10)
 BLUR_KERNEL = (7, 7)
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".JPG", ".JPEG", ".PNG")
@@ -18,10 +15,6 @@ ORANGE_COLOR = (255, 165, 0)
 
 OUTPUT_ROOT = "transformation_output"
 
-
-# ==================================
-# VALIDATION / PATHS
-# ==================================
 def validate_arguments():
     if len(sys.argv) != 2:
         print("Usage: python Transformation.py <image_path_or_directory>")
@@ -35,10 +28,8 @@ def validate_arguments():
 
     return input_path
 
-
 def is_image_file(path):
     return path.endswith(IMAGE_EXTENSIONS)
-
 
 def load_image(path):
     image = cv2.imread(path)
@@ -49,10 +40,8 @@ def load_image(path):
 
     return image
 
-
 def to_rgb(image):
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
 
 def extract_image_info(image_path):
     file_name = os.path.basename(image_path)
@@ -63,17 +52,12 @@ def extract_image_info(image_path):
 
     return plant_name, class_name, name, extension
 
-
 def create_output_directory_from_image(image_path):
     plant_name, class_name, _, _ = extract_image_info(image_path)
     output_dir = os.path.join(OUTPUT_ROOT, plant_name, class_name)
     os.makedirs(output_dir, exist_ok=True)
     return output_dir
 
-
-# ==================================
-# CORE MASK / SEGMENTATION
-# ==================================
 def create_binary_mask(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, BLUR_KERNEL, 0)
@@ -91,7 +75,6 @@ def create_binary_mask(image):
 
     return binary_mask
 
-
 def get_largest_contour(binary_mask):
     contours, _ = cv2.findContours(
         binary_mask,
@@ -104,13 +87,8 @@ def get_largest_contour(binary_mask):
 
     return max(contours, key=cv2.contourArea)
 
-
-# ==================================
-# TRANSFORMATIONS
-# ==================================
 def show_gaussian_blur(image):
     return create_binary_mask(image)
-
 
 def create_masked_image(image):
     binary_mask = create_binary_mask(image)
@@ -123,7 +101,6 @@ def create_masked_image(image):
 
     final_masked = cv2.add(masked, background)
     return final_masked
-
 
 def create_roi_objects_image(image):
     binary_mask = create_binary_mask(image)
@@ -158,7 +135,6 @@ def create_roi_objects_image(image):
 
     return roi_objects
 
-
 def detect_internal_edges(image, binary_mask):
     leaf_only = cv2.bitwise_and(image, image, mask=binary_mask)
     gray_leaf = cv2.cvtColor(leaf_only, cv2.COLOR_BGR2GRAY)
@@ -172,7 +148,6 @@ def detect_internal_edges(image, binary_mask):
 
     return internal_edges
 
-
 def draw_vertical_line_inside_leaf(binary_mask, cx):
     h, w = binary_mask.shape
     mask = np.zeros((h, w), dtype=np.uint8)
@@ -182,7 +157,6 @@ def draw_vertical_line_inside_leaf(binary_mask, cx):
 
     return mask
 
-
 def draw_diagonal_line_inside_leaf(binary_mask, start_point, end_point):
     h, w = binary_mask.shape
     mask = np.zeros((h, w), dtype=np.uint8)
@@ -191,7 +165,6 @@ def draw_diagonal_line_inside_leaf(binary_mask, start_point, end_point):
     mask = cv2.bitwise_and(mask, binary_mask)
 
     return mask
-
 
 def create_analyze_object_image(image):
     binary_mask = create_binary_mask(image)
@@ -283,10 +256,6 @@ def create_pseudolandmarks_image(image, contour_points_count=50, internal_points
 
     return pseudo_image
 
-
-# ==================================
-# HISTOGRAM
-# ==================================
 def create_color_histogram_figure(image):
     binary_mask = create_binary_mask(image)
     leaf = cv2.bitwise_and(image, image, mask=binary_mask)
@@ -327,10 +296,6 @@ def create_color_histogram_figure(image):
     fig.tight_layout()
     return fig
 
-
-# ==================================
-# DISPLAY / SAVE
-# ==================================
 def build_transformation_panels(image):
     original_rgb = to_rgb(image)
 
@@ -363,7 +328,6 @@ def build_transformation_panels(image):
 
     return images, titles, cmap_list
 
-
 def create_transformation_figure(image):
     images, titles, cmap_list = build_transformation_panels(image)
 
@@ -378,18 +342,15 @@ def create_transformation_figure(image):
     fig.tight_layout()
     return fig
 
-
 def display_single_image_mode(image):
     transformation_fig = create_transformation_figure(image)
     histogram_fig = create_color_histogram_figure(image)
 
     plt.show()
 
-
 def save_figure(fig, output_path):
     fig.savefig(output_path, bbox_inches="tight")
     plt.close(fig)
-
 
 def process_single_image_for_directory(image_path):
     image = load_image(image_path)
@@ -413,7 +374,6 @@ def process_single_image_for_directory(image_path):
     print(f"Saved: {histogram_output_path}")
     print("-" * 60)
 
-
 def process_directory(directory_path):
     found_images = 0
 
@@ -427,10 +387,6 @@ def process_directory(directory_path):
     if found_images == 0:
         print("No image files found in the directory.")
 
-
-# ==================================
-# MAIN
-# ==================================
 def main():
     input_path = validate_arguments()
 

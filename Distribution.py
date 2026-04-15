@@ -82,7 +82,6 @@ def plot_bar_chart(plant_name, class_counts):
 
     plt.xticks(rotation=45)
     plt.tight_layout()
-    plt.show()
 
 
 def plot_pie_chart(plant_name, class_counts):
@@ -93,7 +92,6 @@ def plot_pie_chart(plant_name, class_counts):
     plt.pie(values, labels=labels, autopct="%1.1f%%")
     plt.title(f"{plant_name} - Class distribution")
     plt.tight_layout()
-    plt.show()
 
 
 def main():
@@ -109,6 +107,6 @@ def main():
     plot_bar_chart(plant_name, class_counts)
     plot_pie_chart(plant_name, class_counts)
 
-
+    plt.show()
 if __name__ == "__main__":
     main()

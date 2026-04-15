@@ -48,36 +48,36 @@ print("Data has been split into training and validation sets.")
 
 # run the Augmentation program
 
-# for className in os.listdir(train_dir):
-#     classPath = os.path.join(train_dir, className)
-#     if not os.path.isdir(classPath):
-#         continue
-#     for image in os.listdir(classPath):
-#         if not image.lower().endswith(('.png', '.jpg', '.jpeg')):
-#             continue
-#         imagePath = os.path.join(classPath, image)
-#         subprocess.run(["python3", "../Augmentation.py", imagePath])
+for className in os.listdir(train_dir):
+    classPath = os.path.join(train_dir, className)
+    if not os.path.isdir(classPath):
+        continue
+    for image in os.listdir(classPath):
+        if not image.lower().endswith(('.png', '.jpg', '.jpeg')):
+            continue
+        imagePath = os.path.join(classPath, image)
+        subprocess.run(["python3", "../Augmentation.py", imagePath, "-t"])
 
-# print("Data augmentation completed.")
+print("Data augmentation completed.")
 
 # prepare data for CNN model
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 # 0-255 => 0-1
 
-# train_data_generator = ImageDataGenerator(rescale=1./255)
+train_data_generator = ImageDataGenerator(rescale=1./255)
 validation_data_generator = ImageDataGenerator(rescale=1./255)
 
-train_data_generator = ImageDataGenerator(
-    rescale=1./255,
-    rotation_range=40,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
-    zoom_range=0.3,
-    shear_range=0.15,
-    horizontal_flip=True,
-    fill_mode='nearest'
-)
+# train_data_generator = ImageDataGenerator(
+#     rescale=1./255,
+#     rotation_range=40,
+#     width_shift_range=0.2,
+#     height_shift_range=0.2,
+#     zoom_range=0.3,
+#     shear_range=0.15,
+#     horizontal_flip=True,
+#     fill_mode='nearest'
+# )
 
 train_generator = train_data_generator.flow_from_directory(
     train_dir,
@@ -132,7 +132,7 @@ print("Model architecture defined.")
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 try:
     print("Model compiled. Starting training...")
-    trained_model = model.fit(train_generator, epochs=10, validation_data=validation_generator)
+    trained_model = model.fit(train_generator, epochs=30, validation_data=validation_generator)
     print("Model training completed.")
     # Save the model
     model.save("my_model.h5")
